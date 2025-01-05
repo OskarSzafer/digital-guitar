@@ -3,7 +3,7 @@ import guitar
 import logging
 
 class Guitar_piano_coded():
-    def __init__(self, path, keys, strings):
+    def __init__(self, pleyer, keys, strings):
 
         # Configure logging
         logging.basicConfig(
@@ -12,7 +12,7 @@ class Guitar_piano_coded():
             format='%(asctime)s - %(levelname)s - %(message)s'  # Log format
         )
 
-        self.guitar = guitar.Guitar(path)
+        self.guitar = pleyer # guitar.Guitar(path)
         self.pressed_keys = set()
 
         self.keys_order = keys
@@ -21,15 +21,26 @@ class Guitar_piano_coded():
         self.strings = strings
         self.strings_len = len(strings)
 
+        # To keep track of hooked keys and their callbacks
+        self.hooked_keys = []
+
         for key in keys:
             keyboard.hook_key(key, self.on_note_key)
+            self.hooked_keys.append(('note', key, self.on_note_key))
 
         for key in strings:
             keyboard.hook_key(key, self.on_string_key)
+            self.hooked_keys.append(('string', key, self.on_string_key))
+
+    def __del__(self):
+        for hook_type, key, callback in self.hooked_keys:
+            keyboard.unhook_key(key, callback)
+        self.hooked_keys.clear()
+        logging.info("All keyboard hooks have been removed and resources cleaned up.")
 
     def guitar_play(self, i):
-        self.guitar.play(i)
         print(f"g1 note: {i}")
+        self.guitar.play(i)
 
     def get_note_num(self):
         # If no keys
@@ -73,14 +84,18 @@ class Guitar_piano_coded():
 
 
 def main():
-    path = 'clean'
     keys = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c']
     strings = ['1', '2', '3', '4', '5', '6']
 
-    g1 = Guitar_piano_coded(path, keys, strings)
+    # g1 = Guitar_piano_coded('Samples', keys, strings)
+    g1 = Guitar_piano_coded(guitar.Guitar('clean'), keys, strings)
     
-    # Keep the script running
     keyboard.wait('esc')
+    
+    g1.guitar = guitar.Guitar('Samples')
+
+    keyboard.wait('esc')
+
 
 if __name__ == "__main__":
     main()
