@@ -48,6 +48,8 @@ class Guitar_wrapper():
     def get_note_num(self, fs=False):
         # If no keys
         if(len(self.pressed_keys) == 0):
+            #if(fs):
+                
             return 0
 
         # If 1 key
@@ -88,11 +90,11 @@ class Guitar_wrapper():
                     self.guitar_play(note_num)
                 else:
                     # bottom to top
-                    self.guitar_play(note_num + 34)
+                    self.guitar_play(note_num + 24)
             else:
                 note_num = self.get_note_num(fs=True)
                 # fingerstyle, strings top to bottom
-                self.guitar_play(((note_num + 1) * (self.strings.index(e.name)+1) - 1))
+                self.guitar_play(note_num + self.strings.index(e.name))
 
 
 class Input_handler():
@@ -160,8 +162,8 @@ def main():
     # previous_mode, next_mode, flip string_mode
     mode_keys = [',', '.', '0']
 
-    fingerstyle_modes  = ['soundsamples/Samples', 'soundsamples/Clean_fs']
-    chord_modes = ['soundsamples/Samples', 'soundsamples/Clean']
+    fingerstyle_modes  = ['Samples', 'Clean_fs']
+    chord_modes = ['Samples', 'Clean']
 
     input_handler = Input_handler(frets, strings, mode_keys, fingerstyle_modes, chord_modes)
 

@@ -25,6 +25,7 @@ class Button:
     def update(self):
         if not self.button.value and not self.pressed:
             self.press()
+            self.release()
             self.pressed = True
         elif self.button.value and self.pressed:
             self.release()
@@ -65,7 +66,7 @@ class Potentiometer:
 
 
 class Encoder:
-    def __init__(self, pin_a, pin_b, name, volume_step=10):
+    def __init__(self, pin_a, pin_b, name, volume_step=60):
         self.encoder = rotaryio.IncrementalEncoder(pin_a, pin_b)
         self.last_position = None
         self.name = name
@@ -100,18 +101,18 @@ class Encoder:
 
 
 #buttons on fret
-button_A = Button(board.GP0, Keycode.A)
-button_S = Button(board.GP1, Keycode.S)
-button_D = Button(board.GP2, Keycode.D)
-button_F = Button(board.GP3, Keycode.F)
-button_G = Button(board.GP4, Keycode.G)
-button_H = Button(board.GP5, Keycode.H)
-button_J = Button(board.GP6, Keycode.J)
-button_K = Button(board.GP7, Keycode.K)
-button_L = Button(board.GP8, Keycode.L)
-button_Z = Button(board.GP9, Keycode.Z)
-button_X = Button(board.GP10, Keycode.X)
-button_C = Button(board.GP11, Keycode.C)
+button_A = Button(board.GP0, Keycode.A) #1
+button_S = Button(board.GP2, Keycode.S) #2
+button_D = Button(board.GP3, Keycode.D) #3
+button_F = Button(board.GP1, Keycode.F) #4
+button_G = Button(board.GP6, Keycode.G) #5
+button_H = Button(board.GP7, Keycode.H) #6
+button_J = Button(board.GP5, Keycode.J) #7
+button_K = Button(board.GP4, Keycode.K) #8
+button_L = Button(board.GP9, Keycode.L) #9
+button_Z = Button(board.GP8, Keycode.Z) #10
+button_X = Button(board.GP10, Keycode.X) #11
+button_C = Button(board.GP11, Keycode.C) #12
 
 #buttons on box
 button_1 = Button(board.GP21, Keycode.ONE) 
