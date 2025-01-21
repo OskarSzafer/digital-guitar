@@ -5,25 +5,20 @@ import pygame
 pygame.mixer.init()
 
 class Guitar():
-
-    folder_path = ''
-    files = []
-    sounds = []
-    channels = []
-
-    turn = 0
     limit = 100
+    guitar_num = 2
 
     def __init__(self, path):
-        self.files.clear()
-        self.sounds.clear()
-        self.channels.clear()
+        self.turn = 0
+        self.files = []
+        self.sounds = []
+        self.channels = []
 
         self.folder_path = path
         self.find_all_files()
         self.load_wav()
 
-        pygame.mixer.set_num_channels(self.limit)
+        pygame.mixer.set_num_channels(self.limit * self.guitar_num)
 
         for i in range(self.limit):
             self.channels.append(pygame.mixer.Channel(i))
@@ -39,6 +34,9 @@ class Guitar():
             self.sounds.append(sound)
 
     def play(self, i):
-        self.turn = (self.turn + 1) % self.limit
-        self.channels[self.turn].stop()
-        self.channels[self.turn].play(self.sounds[i])
+        try:
+            self.turn = (self.turn + 1) % self.limit
+            self.channels[self.turn].stop()
+            self.channels[self.turn].play(self.sounds[i])
+        except:
+            print("Error: Guitar.play()")

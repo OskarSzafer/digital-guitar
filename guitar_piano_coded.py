@@ -2,17 +2,20 @@ import keyboard
 import guitar
 import logging
 
-class Guitar_piano_coded():
-    def __init__(self, pleyer, keys, strings):
+class Guitar_wrapper():
+
+    def __init__(self, pleyer, keys, strings, string_mode_fingerstye = False):
+
+        self.string_mode_fingerstye = string_mode_fingerstye
 
         # Configure logging
         logging.basicConfig(
-            filename='guitar1.log',   # Log file name
-            level=logging.ERROR,      # Log level (ERROR for error-level logs)
-            format='%(asctime)s - %(levelname)s - %(message)s'  # Log format
+            filename = 'guitar1.log',   # Log file name
+            level = logging.ERROR,      # Log level (ERROR for error-level logs)
+            format = '%(asctime)s - %(levelname)s - %(message)s'  # Log format
         )
 
-        self.guitar = pleyer # guitar.Guitar(path)
+        self.guitar = pleyer
         self.pressed_keys = set()
 
         self.keys_order = keys
@@ -59,12 +62,11 @@ class Guitar_piano_coded():
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+13
 
-        # If 2 keys
+        # If 3 keys
         elif(len(self.pressed_keys) == 3):
             for i in range(self.keys_len):
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+24
-
 
     # Hook for key presses
     def on_note_key(self, e):
@@ -80,21 +82,95 @@ class Guitar_piano_coded():
     def on_string_key(self, e):
         if e.event_type == keyboard.KEY_DOWN:
             note_num = self.get_note_num()
-            self.guitar_play(note_num + self.strings.index(e.name)*34)
+
+            if not self.string_mode_fingerstye:
+                if self.strings.index(e.name) < 3:
+                    # top to bottom
+                    self.guitar_play(note_num)
+                else:
+                    # bottom to top
+                    self.guitar_play(note_num + 34)
+            else:
+                # fingerstyle, strings top to bottom
+                # TODO max 1 button read on note number
+                self.guitar_play(((note_num + 1) * (self.strings.index(e.name)+1) - 1))
+
+
+class Input_handler():
+
+    def __init__(self, frets, strings, mode_keys, fingerstyle_modes, chord_modes):
+        self.mode_keys = mode_keys
+
+        self.fingerstyle_modes = fingerstyle_modes
+        self.chord_modes = chord_modes
+
+        self.current_mode = 0
+
+        print(f"PLAYER SET TO {self.chord_modes[self.current_mode]}")
+        self.wrapper = Guitar_wrapper(guitar.Guitar(self.chord_modes[self.current_mode]), frets, strings)
+
+        self.hooked_keys = []
+        keyboard.hook_key(self.mode_keys[0], self.previous_mode)
+        self.hooked_keys.append(('mode', self.mode_keys[0], self.previous_mode))
+        keyboard.hook_key(self.mode_keys[1], self.next_mode)
+        self.hooked_keys.append(('mode', self.mode_keys[1], self.next_mode))
+        keyboard.hook_key(self.mode_keys[2], self.flip_string_mode)
+        self.hooked_keys.append(('mode', self.mode_keys[2], self.flip_string_mode))
+
+        
+    def update_wrapper(self):
+        if self.wrapper.string_mode_fingerstye:
+            self.wrapper.guitar = guitar.Guitar(self.fingerstyle_modes[self.current_mode])
+            print(f"PLAYER SET TO {self.fingerstyle_modes[self.current_mode]}")
+        else:
+            self.wrapper.guitar = guitar.Guitar(self.chord_modes[self.current_mode])
+            print(f"PLAYER SET TO {self.chord_modes[self.current_mode]}")
+
+    def previous_mode(self, e):
+        if e.event_type != keyboard.KEY_DOWN:
+            return
+
+        self.current_mode = self.current_mode - 1
+        if self.current_mode < 0:
+            self.current_mode = len(self.fingerstyle_modes) - 1
+
+        self.update_wrapper()
+
+    def next_mode(self, e):
+        if e.event_type != keyboard.KEY_DOWN:
+            return
+
+        self.current_mode = self.current_mode + 1
+        if self.current_mode >= len(self.fingerstyle_modes):
+            self.current_mode = 0
+
+        self.update_wrapper()
+
+    def flip_string_mode(self, e):
+        if e.event_type != keyboard.KEY_DOWN:
+            return
+
+        self.wrapper.string_mode_fingerstye = not self.wrapper.string_mode_fingerstye
+        self.update_wrapper()
 
 
 def main():
-    keys = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c']
+    frets = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c']
     strings = ['1', '2', '3', '4', '5', '6']
 
-    # g1 = Guitar_piano_coded('Samples', keys, strings)
-    g1 = Guitar_piano_coded(guitar.Guitar('clean'), keys, strings)
-    
-    keyboard.wait('esc')
-    
-    g1.guitar = guitar.Guitar('Samples')
+    # previous_mode, next_mode, flip string_mode
+    mode_keys = [',', '.', '0']
 
+    fingerstyle_modes  = ['Samples', 'Clean_fs']
+    chord_modes = ['Samples', 'Clean']
+
+    input_handler = Input_handler(frets, strings, mode_keys, fingerstyle_modes, chord_modes)
+
+
+    # wait for 'esc' key to exit
     keyboard.wait('esc')
+
+    del input_handler
 
 
 if __name__ == "__main__":
