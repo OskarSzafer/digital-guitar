@@ -45,7 +45,7 @@ class Guitar_wrapper():
         print(f"g1 note: {i}")
         self.guitar.play(i)
 
-    def get_note_num(self):
+    def get_note_num(self, fs=False):
         # If no keys
         if(len(self.pressed_keys) == 0):
             return 0
@@ -57,13 +57,13 @@ class Guitar_wrapper():
                     return i+1
 
         # If 2 keys   
-        elif(len(self.pressed_keys) == 2):
+        elif(len(self.pressed_keys) == 2)and(fs==False):
             for i in range(self.keys_len):
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+13
 
         # If 3 keys
-        elif(len(self.pressed_keys) == 3):
+        elif(len(self.pressed_keys) == 3)and(fs==False):
             for i in range(self.keys_len):
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+24
@@ -81,18 +81,17 @@ class Guitar_wrapper():
     # Hook for string presses
     def on_string_key(self, e):
         if e.event_type == keyboard.KEY_DOWN:
-            note_num = self.get_note_num()
-
             if not self.string_mode_fingerstye:
-                if self.strings.index(e.name) < 3:
+                note_num = self.get_note_num(fs=False)
+                if self.strings.index(e.name) < 3: 
                     # top to bottom
                     self.guitar_play(note_num)
                 else:
                     # bottom to top
                     self.guitar_play(note_num + 34)
             else:
+                note_num = self.get_note_num(fs=True)
                 # fingerstyle, strings top to bottom
-                # TODO max 1 button read on note number
                 self.guitar_play(((note_num + 1) * (self.strings.index(e.name)+1) - 1))
 
 
@@ -161,8 +160,8 @@ def main():
     # previous_mode, next_mode, flip string_mode
     mode_keys = [',', '.', '0']
 
-    fingerstyle_modes  = ['Samples', 'Clean_fs']
-    chord_modes = ['Samples', 'Clean']
+    fingerstyle_modes  = ['soundsamples/Samples', 'soundsamples/Clean_fs']
+    chord_modes = ['soundsamples/Samples', 'soundsamples/Clean']
 
     input_handler = Input_handler(frets, strings, mode_keys, fingerstyle_modes, chord_modes)
 

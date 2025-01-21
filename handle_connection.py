@@ -99,7 +99,6 @@ class Encoder:
         cc.send(ConsumerControlCode.VOLUME_DECREMENT)  
 
 
-
 #buttons on fret
 button_A = Button(board.GP0, Keycode.A)
 button_S = Button(board.GP1, Keycode.S)
@@ -115,12 +114,12 @@ button_X = Button(board.GP10, Keycode.X)
 button_C = Button(board.GP11, Keycode.C)
 
 #buttons on box
-button_1 = Button(board.GP12, Keycode.ONE)
-button_2 = Button(board.GP13, Keycode.TWO)
-button_3 = Button(board.GP14, Keycode.THREE)
-button_4 = Button(board.GP15, Keycode.FOUR)
-button_5 = Button(board.GP16, Keycode.FIVE)
-button_6 = Button(board.GP17, Keycode.SIX)
+button_1 = Button(board.GP21, Keycode.ONE) 
+button_2 = Button(board.GP20, Keycode.TWO)
+button_3 = Button(board.GP18, Keycode.THREE) 
+button_4 = Button(board.GP19, Keycode.FOUR)
+button_5 = Button(board.GP17, Keycode.FIVE)
+button_6 = Button(board.GP16, Keycode.SIX)
 
 #potenciometers
 potentiometer_a = Potentiometer(board.GP26, "PotA")
@@ -128,9 +127,9 @@ potentiometer_b = Potentiometer(board.GP27, "PotB")
 potentiometer_c = Potentiometer(board.GP28, "PotC")
 
 #encoders
-encoder_a = Encoder(board.GP22, board.GP21, "EncoderA")
-encoder_b = Encoder(board.GP20, board.GP19, "EncoderB")
-encoder_button = Button(board.GP18, Keycode.ZERO)
+encoder_a = Encoder(board.GP15, board.GP14, "EncoderA") 
+encoder_b = Encoder(board.GP13, board.GP12, "EncoderB")
+encoder_button = Button(board.GP22, Keycode.ZERO)
 
 while True:
     #update buttons on fret
@@ -159,10 +158,11 @@ while True:
     potentiometer_a.update()
     potentiometer_b.update()
     potentiometer_c.update()
-    
+   
     #update encoders
     encoder_a.update()
     encoder_b.update()
     encoder_button.update()
 
     time.sleep(0.05)
+#
