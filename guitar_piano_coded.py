@@ -47,6 +47,7 @@ class Guitar_wrapper():
 
     def get_note_num(self, fs=False):
         # If no keys
+        print(self.pressed_keys)
         if(len(self.pressed_keys) == 0):
             #if(fs):
                 
@@ -162,8 +163,8 @@ def main():
     # previous_mode, next_mode, flip string_mode
     mode_keys = [',', '.', '0']
 
-    fingerstyle_modes  = ['Samples', 'Clean_fs']
-    chord_modes = ['Samples', 'Clean']
+    fingerstyle_modes  = ['Clean_fs','Rock_fs', 'Samples']
+    chord_modes = ['Clean','rock','Samples']
 
     input_handler = Input_handler(frets, strings, mode_keys, fingerstyle_modes, chord_modes)
 
