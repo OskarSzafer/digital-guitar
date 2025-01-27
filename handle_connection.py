@@ -87,9 +87,15 @@ class Encoder:
                 self.decrease_volume()
         else:
             if changed_value > 0:
-                print("Value increased")
+                #print("Value increased")
+                kbd.press(Keycode.PERIOD)
+                time.sleep(0.2)
+                kbd.release(Keycode.PERIOD)
             elif changed_value < 0:
-                print("Value decreased")
+                #print("Value decreased")
+                kbd.press(Keycode.COMMA)
+                time.sleep(0.2)
+                kbd.release(Keycode.COMMA)
 
     def increase_volume(self):
         print("Increasing volume.")
