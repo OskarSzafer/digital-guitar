@@ -54,19 +54,19 @@ class Guitar_wrapper():
             return 0
 
         # If 1 key
-        elif(len(self.pressed_keys) == 1):
+        elif(len(self.pressed_keys) == 1 or fs):
             for i in range(self.keys_len):
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+1
 
         # If 2 keys   
-        elif(len(self.pressed_keys) == 2)and(fs==False):
+        elif(len(self.pressed_keys) == 2)and not fs:
             for i in range(self.keys_len):
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+13
 
         # If 3 keys
-        elif(len(self.pressed_keys) == 3)and(fs==False):
+        elif(len(self.pressed_keys) == 3)and not fs:
             for i in range(self.keys_len):
                 if(self.keys_order[i] in self.pressed_keys):
                     return i+24
@@ -95,7 +95,7 @@ class Guitar_wrapper():
             else:
                 note_num = self.get_note_num(fs=True)
                 # fingerstyle, strings top to bottom
-                self.guitar_play(note_num + self.strings.index(e.name))
+                self.guitar_play(note_num + self.strings.index(e.name) * 13)
 
 
 class Input_handler():
