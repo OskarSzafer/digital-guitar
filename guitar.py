@@ -25,6 +25,7 @@ class Guitar():
 
     def find_all_files(self):
         for root, dirs, files in os.walk(self.folder_path):
+            
             for file in files:
                 self.files.append(os.path.join(root, file))
 
